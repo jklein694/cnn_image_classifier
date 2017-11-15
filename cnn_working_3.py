@@ -79,6 +79,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     w_conv2 = weight_variable([5, 5, 32, 64], name='hidden_layer_2')
     w_conv3 = weight_variable([5, 5, 64, 128], name='hidden_layer_3')
     w_fc1 = weight_variable([800 * 128, 1024], name='fully_connected_layer')
+    w_fc2 = weight_variable([1084, 1024], name='fully_connected_layer_2')
     out_w = weight_variable([1024, n_classes], name='hidden_layer_out')
 
     # bias
@@ -86,6 +87,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     b_conv2 = bias_variable([64])
     b_conv3 = bias_variable([128])
     b_fc1 = bias_variable([1024])
+    b_fc2 = bias_variable([1024])
     out_b = bias_variable([n_classes])
 
     keep_prob = tf.placeholder(tf.float32, name='keep_prob')
@@ -98,20 +100,22 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     y = tf.reshape(y, [-1, 2])
 
     # Convolutional Layers
-    h_conv1 = tf.nn.relu(conv2d(x_img, w_conv1, padding='SAME') + b_conv1)
+    h_conv1 = tf.nn.elu(conv2d(x_img, w_conv1, padding='SAME') + b_conv1)
     h_pool1 = max_pool_2x2(h_conv1, padding='SAME')
 
-    h_conv2 = tf.nn.relu(conv2d(h_pool1, w_conv2, padding='SAME') + b_conv2)
+    h_conv2 = tf.nn.elu(conv2d(h_pool1, w_conv2, padding='SAME') + b_conv2)
     h_pool2 = max_pool_2x2(h_conv2, padding='SAME')
 
-    h_conv3 = tf.nn.relu(conv2d(h_pool2, w_conv3, padding='SAME') + b_conv3)
+    h_conv3 = tf.nn.elu(conv2d(h_pool2, w_conv3, padding='SAME') + b_conv3)
     h_pool3 = max_pool_2x2(h_conv3, padding='SAME')
 
     h_pool2_flat = tf.reshape(h_pool3, [-1, 800 * 128])
-    h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, w_fc1) + b_fc1)
-    h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+    h_fc1 = tf.nn.elu(tf.matmul(h_pool2_flat, w_fc1) + b_fc1)
 
-    predictions = tf.add(tf.matmul(h_fc1_drop, out_w), out_b, name='predictions')
+    h_fc2 = tf.nn.elu(tf.matmul(h_fc1, w_fc2) + b_fc2)
+    h_fc2_drop = tf.nn.dropout(h_fc2, keep_prob)
+
+    predictions = tf.add(tf.matmul(h_fc2_drop, out_w), out_b, name='predictions')
 
     # Cost function
     loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=y, logits=predictions, name='loss'))
@@ -128,8 +132,6 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     tf.summary.scalar("validation_cost", validation_cost)
     tf.summary.histogram('Hist Val Cost', validation_cost)
 
-    print(predictions.shape)
-    print(y.shape)
 
     # Correct Predictions and Accuracy
     correct_prediction = tf.equal(tf.argmax(predictions, 1), tf.argmax(y, 1), name='correct_prediction')
@@ -202,13 +204,16 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
             try:
                 print("Test accuracy %g" % accuracy.eval(feed_dict={x: X_test, y: y_test, keep_prob: 1.0}))
             except:
-                print(X_test.shape)
-                print(y_test.shape)
+                print('Test Accuracy Error')
+                print('X_test predictions Shape: ', np.array(preds).shape)
+                print('X_test Shape: ', X_test.shape)
+                print('y_test Shape: ', y_test.shape)
 
             try:
                 print("Validation Loss:", sess.run(validation_cost, feed_dict={x: X_test, y: y_test, keep_prob: 1.0}))
             except:
-                print(c)
+                print('Validation loss error')
+                print("Current Training Loss:", c)
 
             print('Epoch ', epoch + 1, ' completed out of ', training_epochs, ', loss: ', total_loss)
 

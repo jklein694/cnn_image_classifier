@@ -4,6 +4,7 @@ import pandas as pd
 
 import check
 import convolutional_nn_valid as cnn1
+import cnn_working_3 as cnn4
 import cnn_working as cnn2
 import get_raw_images as scrape_images
 import image_augmentation as ia
@@ -95,7 +96,7 @@ def do_run_all():
     x, y = ia.load_data(image_size, 15000)
 
     # Run convolutional neural network
-    total_loss, accuracy = cnn2.run(x, y, epochs=epoch_param, learning_rate=learn_param)
+    total_loss, accuracy = cnn4.run(x, y, epochs=epoch_param, learning_rate=learn_param)
 
     # Restore convolutional neural network and build confusion matrix
     restore_test.run_test(x, y, model_path, image_size)
@@ -154,7 +155,7 @@ def do_run_train():
         x, y = ia.load_data(image_size, 15000)
 
     # Run convolutional neural network
-    total_loss, accuracy = cnn2.run(x, y, epochs=epoch_param, learning_rate=learn_param, image_size=image_size)
+    total_loss, accuracy = cnn4.run(x, y, epochs=epoch_param, learning_rate=learn_param, image_size=image_size)
 
     # Restore convolutional neural network and build confusion matrix
     restore_test.run_test(x, y, model_path, image_size)

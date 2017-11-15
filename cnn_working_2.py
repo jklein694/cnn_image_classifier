@@ -70,22 +70,22 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     learning_rate = tf.train.exponential_decay(initial_learning_rate,
                                                global_step,
                                                decay_steps,
-                                               decay_rate=0.92,
+                                               decay_rate=0.96,
                                                staircase=True,
                                                name='exponential_decay_learning_rate')
 
     # Weights
-    w_conv1 = weight_variable([5, 5, 1, 32], name='hidden_layer_1')
-    w_conv2 = weight_variable([5, 5, 32, 64], name='hidden_layer_2')
-    w_conv3 = weight_variable([5, 5, 64, 128], name='hidden_layer_3')
-    w_fc1 = weight_variable([800 * 128, 1024], name='fully_connected_layer')
+    w1_conv = weight_variable([5, 5, 1, 32], name='hidden_layer_1')
+    w2_conv = weight_variable([5, 5, 32, 64], name='hidden_layer_2')
+    w3_fc = weight_variable([7 * 7 * 64, 1024], name='fully_connected_layer')
+    w4_fc = weight_variable([1024, 1024], name='fully_connected_layer_2')
     out_w = weight_variable([1024, n_classes], name='hidden_layer_out')
 
     # bias
-    b_conv1 = bias_variable([32])
-    b_conv2 = bias_variable([64])
-    b_conv3 = bias_variable([128])
-    b_fc1 = bias_variable([1024])
+    b1_conv = bias_variable([32])
+    b2_conv = bias_variable([64])
+    b3_fc = bias_variable([1024])
+    b4_fc = bias_variable([1024])
     out_b = bias_variable([n_classes])
 
     keep_prob = tf.placeholder(tf.float32, name='keep_prob')
@@ -98,20 +98,19 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     y = tf.reshape(y, [-1, 2])
 
     # Convolutional Layers
-    h_conv1 = tf.nn.relu(conv2d(x_img, w_conv1, padding='SAME') + b_conv1)
+    h_conv1 = tf.nn.elu(conv2d(x_img, w1_conv, padding='SAME') + b1_conv)
     h_pool1 = max_pool_2x2(h_conv1, padding='SAME')
 
-    h_conv2 = tf.nn.relu(conv2d(h_pool1, w_conv2, padding='SAME') + b_conv2)
+    h_conv2 = tf.nn.elu(conv2d(h_pool1, w2_conv, padding='SAME') + b2_conv)
     h_pool2 = max_pool_2x2(h_conv2, padding='SAME')
 
-    h_conv3 = tf.nn.relu(conv2d(h_pool2, w_conv3, padding='SAME') + b_conv3)
-    h_pool3 = max_pool_2x2(h_conv3, padding='SAME')
+    h_pool2_flat = tf.reshape(h_pool2, [-1, 7 * 7 * 64])
+    h_fc1 = tf.nn.elu(tf.matmul(h_pool2_flat, w3_fc) + b3_fc)
 
-    h_pool2_flat = tf.reshape(h_pool3, [-1, 800 * 128])
-    h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, w_fc1) + b_fc1)
-    h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
+    h_fc2 = tf.nn.elu(tf.matmul(h_fc1, w4_fc) + b4_fc)
+    h_fc2_drop = tf.nn.dropout(h_fc2, keep_prob)
 
-    predictions = tf.add(tf.matmul(h_fc1_drop, out_w), out_b, name='predictions')
+    predictions = tf.add(tf.matmul(h_fc2_drop, out_w), out_b, name='predictions')
 
     # Cost function
     loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=y, logits=predictions, name='loss'))
@@ -127,9 +126,6 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     validation_cost = loss
     tf.summary.scalar("validation_cost", validation_cost)
     tf.summary.histogram('Hist Val Cost', validation_cost)
-
-    print(predictions.shape)
-    print(y.shape)
 
     # Correct Predictions and Accuracy
     correct_prediction = tf.equal(tf.argmax(predictions, 1), tf.argmax(y, 1), name='correct_prediction')
@@ -185,7 +181,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
                                                          feed_dict={x: batch_x, y: batch_y, keep_prob: 0.5})
 
                 total_loss += c
-                if step % 25 == 0:
+                if step % 50 == 0:
                     train_accuracy = accuracy.eval(feed_dict={x: batch_x, y: batch_y, keep_prob: 1.0})
                     print("step %d, training accuracy %g" % (step, train_accuracy))
 
@@ -197,18 +193,10 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
             print('~~~~~~~~~~~~~~~~~~~~\n')
 
             print('Current Learning Rate: ', lr)
-            preds = sess.run([predictions], feed_dict={x: X_test, y: y_test, keep_prob: 1.0})
 
-            try:
-                print("Test accuracy %g" % accuracy.eval(feed_dict={x: X_test, y: y_test, keep_prob: 1.0}))
-            except:
-                print(X_test.shape)
-                print(y_test.shape)
+            print("Test accuracy %g" % accuracy.eval(feed_dict={x: X_test, y: y_test, keep_prob: 1.0}))
 
-            try:
-                print("Validation Loss:", sess.run(validation_cost, feed_dict={x: X_test, y: y_test, keep_prob: 1.0}))
-            except:
-                print(c)
+            print("Validation Loss:", sess.run(validation_cost, feed_dict={x: X_test, y: y_test, keep_prob: 0.5}))
 
             print('Epoch ', epoch + 1, ' completed out of ', training_epochs, ', loss: ', total_loss)
 
