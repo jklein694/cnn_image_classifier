@@ -1,5 +1,5 @@
 import glob
-
+import time
 import cv2
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
@@ -79,6 +79,7 @@ def load_img_class(class_path, class_label, class_size, img_size):
 
 
 def load_data(img_size, class_size):
+    start = time.time()
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
     print('Starting Image Augmentation')
 
@@ -116,5 +117,9 @@ def load_data(img_size, class_size):
 
     print('x tensor shape: {}'.format(np.array(X).shape))
     print('y tensor shape: {}'.format(np.array(y).shape))
+
+    end = time.time()
+
+    print('\n data import time: {} seconds'.format(round(end - start, 0)))
 
     return X, y
