@@ -11,6 +11,4 @@
 ### 5. Run final check on model
 
 
-All of these steps will automatically happen after running the master script once.
-
-The entire process takes about 6 hours. 
+## To run program enter `python master.py ` in terminal, while in program directory
