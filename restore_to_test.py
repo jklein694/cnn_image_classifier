@@ -124,11 +124,4 @@ def run_test(X_, Y_, model_path, image_size):
     class_names = ['Not Hotdog', 'Hotdog']
     y_test, y_pred, cm = model_predictions(X_, Y_, model_path, image_size)
     print_cm(cm, class_names)
-    plt.figure()
-    plot_confusion_matrix(cm, y_test, y_pred, class_names=class_names,
-                          title='Confusion matrix, without normalization')
-    # Plot normalized confusion matrix
-    plt.figure()
-    plot_confusion_matrix(cm, y_test, y_pred, class_names=class_names, normalize=True,
-                          title='Normalized confusion matrix')
-    plt.show()
+

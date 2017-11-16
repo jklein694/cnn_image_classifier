@@ -79,7 +79,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     w_conv2 = weight_variable([5, 5, 32, 64], name='hidden_layer_2')
     w_conv3 = weight_variable([5, 5, 64, 128], name='hidden_layer_3')
     w_fc1 = weight_variable([800 * 128, 1024], name='fully_connected_layer')
-    w_fc2 = weight_variable([1084, 1024], name='fully_connected_layer_2')
+    w_fc2 = weight_variable([1024, 1024], name='fully_connected_layer_2')
     out_w = weight_variable([1024, n_classes], name='hidden_layer_out')
 
     # bias

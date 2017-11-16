@@ -120,6 +120,6 @@ def load_data(img_size, class_size):
 
     end = time.time()
 
-    print('\n data import time: {} seconds'.format(round(end - start, 0)))
+    print('\nData Import Time: {} seconds'.format(round(end - start, 0)))
 
     return X, y
