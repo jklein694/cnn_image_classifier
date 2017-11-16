@@ -112,7 +112,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     x_img = tf.reshape(x, [-1, image_size, image_size, 1])
 
     y = tf.placeholder('float', shape=[None, n_classes], name='y_placeholder')
-    y = tf.reshape(y, [-1, 2])
+    y_cls = tf.arg_max(y, dimension=1)
 
     # h_conv1 = tf.nn.relu(conv2d(x_img, w1_conv, padding='SAME') + b1_conv)
     # h_pool1 = max_pool_2x2(h_conv1, padding='SAME')
@@ -134,10 +134,13 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     h_fc2 = tf.nn.relu(tf.matmul(h_fc1, w_fc2) + b_fc2)
     h_fc2_drop = tf.nn.dropout(h_fc2, keep_prob)
 
-    predictions = tf.add(tf.matmul(h_fc2_drop, out_w), out_b, name='predictions')
+    y_pred = tf.add(tf.matmul(h_fc2_drop, out_w), out_b, name='predictions')
+    y_pred_cls = tf.arg_max(y_pred, dimension=1)
+    y_pred_cls = tf.cast(y_pred_cls, tf.float32)
+
 
     # Cost function
-    loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=y, logits=predictions, name='loss'))
+    loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=y_cls, logits=y_pred_cls, name='loss'))
     tf.summary.scalar("Training Loss", loss)
 
     # Optimizer
@@ -152,7 +155,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     tf.summary.histogram('Hist Val Cost', validation_cost)
 
     # Correct Predictions and Accuracy
-    correct_prediction = tf.equal(tf.argmax(predictions, 1), tf.argmax(y, 1), name='correct_prediction')
+    correct_prediction = tf.equal(y_pred_cls, y_cls, name='correct_prediction')
 
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32), name='accuracy')
     tf.summary.scalar("accuracy", accuracy)

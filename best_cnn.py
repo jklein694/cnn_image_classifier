@@ -1,17 +1,26 @@
-import tensorflow as tf
-import numpy as np
-from sklearn.model_selection import train_test_split
 import time
 
+import numpy as np
+import tensorflow as tf
+from numpy.random import seed
+from sklearn.model_selection import train_test_split
+
+seed(1)
+from tensorflow import set_random_seed
+
+set_random_seed(2)
+
+# Reset Graph
+tf.reset_default_graph()
 
 
 def weight_variable(shape, name):
-    initial = tf.truncated_normal(shape, stddev=0.05)
+    initial = tf.truncated_normal(shape, stddev=0.05, name=name)
     return tf.Variable(initial)
 
 
 def bias_variable(shape):
-    initial = tf.constant(0.1, shape=[shape])
+    initial = tf.constant(0.05, shape=[shape])
     return tf.Variable(initial)
 
 
@@ -20,7 +29,8 @@ def create_convolutional_layer(input,
                                conv_filter_size,
                                num_filters):
     # We shall define the weights that will be trained using create_weights function.
-    weights = weight_variable(shape=[conv_filter_size, conv_filter_size, num_input_channels, num_filters], name='conv_layer')
+    weights = weight_variable(shape=[conv_filter_size, conv_filter_size, num_input_channels, num_filters],
+                              name='conv_layer')
     # We create biases using the create_biases function. These are also trained.
     biases = bias_variable(num_filters)
 
@@ -56,7 +66,7 @@ def create_fc_layer(input,
                     num_outputs,
                     use_relu=True):
     # Let's define trainable weights and biases.
-    weights = weight_variable(shape=[num_inputs, num_outputs])
+    weights = weight_variable(shape=[num_inputs, num_outputs], name='fully_connected_layer')
     biases = bias_variable(num_outputs)
 
     layer = tf.matmul(input, weights) + biases
@@ -65,20 +75,6 @@ def create_fc_layer(input,
 
     return layer
 
-
-def create_fc_layer(input,
-                    num_inputs,
-                    num_outputs,
-                    use_relu=True):
-    # Let's define trainable weights and biases.
-    weights = weight_variable(shape=[num_inputs, num_outputs])
-    biases = bias_variable(num_outputs)
-
-    layer = tf.matmul(input, weights) + biases
-    if use_relu:
-        layer = tf.nn.relu(layer)
-
-    return layer
 
 # def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
 #     acc = session.run(accuracy, feed_dict=feed_dict_train)
@@ -93,11 +89,15 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
     print('Starting Convolutional Neural Network')
     nn_start = time.time()
 
+    num_channels = 1
+
+    X_ = np.array(X_).reshape(-1, image_size, image_size, num_channels)
+
     # Get data and TTS
     X_train, X_test, y_train, y_test = train_test_split(X_, Y_, test_size=0.2, random_state=42)
 
     # Config
-    num_channels = 1
+
 
 
     ##Network graph params
@@ -121,9 +121,6 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
     n_classes = 2
     input_dim = [None, image_size_sq]
 
-    # Reset Graph
-    tf.reset_default_graph()
-
     # global step
     global_step = tf.Variable(0, name="global_step", trainable=False, dtype=tf.int64)
 
@@ -140,6 +137,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
 
     y_true = tf.placeholder(tf.float32, shape=[None, num_classes], name='y_true')
     y_true_cls = tf.argmax(y_true, dimension=1)
+    y_true_cls = tf.cast(y_true_cls, tf.float32)
 
     layer_conv1 = create_convolutional_layer(input=x,
                                              num_input_channels=num_channels,
@@ -171,9 +169,10 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
     y_pred = tf.nn.softmax(layer_fc2, name="y_pred")
 
     y_pred_cls = tf.argmax(y_pred, dimension=1)
+    y_pred_cls = tf.cast(y_pred_cls, tf.float32)
 
     # Cost function
-    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_true_cls, logits=y_pred_cls, name='loss'))
+    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_true, logits=layer_fc2, name='loss'))
     tf.summary.scalar("Training Loss", loss)
 
     # Optimizer
@@ -231,6 +230,11 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
             batch_count = int(len(X_train) / batch_size)
             print('Number of Batches: ', batch_count)
             total_loss = 0
+
+            accuracy = accuracy.eval(feed_dict={x: X_test, y_true: y_test})
+
+            val_cost = sess.run(validation_cost, feed_dict={x: X_test, y_true: y_test})
+
             for step in range(batch_count):
                 randidx = np.random.randint(len(X_train), size=batch_size)
 
@@ -241,9 +245,12 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
                                                          feed_dict={x: batch_x, y_true: batch_y})
 
                 total_loss += c
-                if step % 50 == 0:
+                if step % batch_count == 0:
                     train_accuracy = accuracy.eval(feed_dict={x: batch_x, y_true: batch_y})
                     print("step %d, training accuracy %g" % (step, train_accuracy))
+
+                    msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
+                    print(msg.format(epoch + 1, train_accuracy, accuracy, val_cost))
 
                 optimizer.run(feed_dict={x: batch_x, y_true: batch_y})
 
@@ -254,9 +261,9 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
 
             print('Current Learning Rate: ', lr)
 
-            print("Test accuracy %g" % accuracy.eval(feed_dict={x: X_test, y_true: y_test}))
+            print("Test accuracy %g" % accuracy)
 
-            print("Validation Loss:", sess.run(validation_cost, feed_dict={x: X_test, y_true: y_test}))
+            print("Validation Loss:", )
 
             print('Epoch ', epoch + 1, ' completed out of ', training_epochs, ', loss: ', total_loss)
 

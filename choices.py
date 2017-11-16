@@ -9,7 +9,7 @@ import check
 # import deeper_cnn_valid as cnn5
 # import cnn_working_2 as cnn3
 # import cnn_working_5 as cnn6
-import cnn_working6 as cnn7
+import best_cnn as cnn7
 import get_raw_images as scrape_images
 import image_augmentation as ia
 import remove_null_images as rm
