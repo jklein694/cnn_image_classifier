@@ -19,7 +19,7 @@ start_time = time.time()
 paths = ['not_hotdog',
          'hotdog']
 
-model_path = "conv_model_deep/model.ckpt"
+model_path = "conv_model/model.ckpt"
 
 
 def choices():
@@ -58,7 +58,17 @@ def choices():
 
 
 def do_run_all():
-    image_size = 28
+    while True:
+        image_size = input('What image size would you like? \n')
+        if image_size == 'break':
+            break
+        try:
+            image_size = int(image_size)
+        except ValueError:
+            print('Please enter valid integer')
+            continue
+        else:
+            break
     while True:
         epoch_param = input('How many epochs would you like to run? \n')
         if epoch_param == 'break':
@@ -103,7 +113,17 @@ def do_run_all():
 
 
 def do_run_train():
-    image_size = 28
+    while True:
+        image_size = input('What image size would you like? \n')
+        if image_size == 'break':
+            break
+        try:
+            image_size = int(image_size)
+        except ValueError:
+            print('Please enter valid integer')
+            continue
+        else:
+            break
     while True:
         epoch_param = input('How many epochs would you like to run? \n')
         if epoch_param == 'break':
@@ -151,7 +171,17 @@ def do_run_train():
 
 
 def do_run_test():
-    image_size = 28
+    while True:
+        image_size = input('What image size would you like? \n')
+        if image_size == 'break':
+            break
+        try:
+            image_size = int(image_size)
+        except ValueError:
+            print('Please enter valid integer')
+            continue
+        else:
+            break
     # Rotating and or blurring images to create larger and balanced classes
     x, y = ia.load_data(image_size, 15000)
 

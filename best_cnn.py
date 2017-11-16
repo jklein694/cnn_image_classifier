@@ -133,9 +133,9 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
                                                staircase=True,
                                                name='exponential_decay_learning_rate')
 
-    x = tf.placeholder(tf.float32, shape=[None, image_size, image_size, 1], name='x')
+    x = tf.placeholder(tf.float32, shape=[None, image_size, image_size, 1], name='x_placeholder')
 
-    y_true = tf.placeholder(tf.float32, shape=[None, num_classes], name='y_true')
+    y_true = tf.placeholder(tf.float32, shape=[None, num_classes], name='y_placeholder')
     y_true_cls = tf.argmax(y_true, dimension=1)
     y_true_cls = tf.cast(y_true_cls, tf.float32)
 
@@ -168,7 +168,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
 
     y_pred = tf.nn.softmax(layer_fc2, name="y_pred")
 
-    y_pred_cls = tf.argmax(y_pred, dimension=1)
+    y_pred_cls = tf.argmax(y_pred, dimension=1, name='predictions')
     y_pred_cls = tf.cast(y_pred_cls, tf.float32)
 
     # Cost function
@@ -231,10 +231,6 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
             print('Number of Batches: ', batch_count)
             total_loss = 0
 
-            accuracy = accuracy.eval(feed_dict={x: X_test, y_true: y_test})
-
-            val_cost = sess.run(validation_cost, feed_dict={x: X_test, y_true: y_test})
-
             for step in range(batch_count):
                 randidx = np.random.randint(len(X_train), size=batch_size)
 
@@ -245,25 +241,26 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
                                                          feed_dict={x: batch_x, y_true: batch_y})
 
                 total_loss += c
-                if step % batch_count == 0:
+                if step % 100 == 0:
                     train_accuracy = accuracy.eval(feed_dict={x: batch_x, y_true: batch_y})
                     print("step %d, training accuracy %g" % (step, train_accuracy))
-
-                    msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
-                    print(msg.format(epoch + 1, train_accuracy, accuracy, val_cost))
 
                 optimizer.run(feed_dict={x: batch_x, y_true: batch_y})
 
                 # write log
                 writer.add_summary(summary, global_step=step)
 
+            acc = accuracy.eval(feed_dict={x: X_test, y_true: y_test})
+
+            val_cost = sess.run(validation_cost, feed_dict={x: X_test, y_true: y_test})
+
             print('~~~~~~~~~~~~~~~~~~~~\n')
 
             print('Current Learning Rate: ', lr)
 
-            print("Test accuracy %g" % accuracy)
+            msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
 
-            print("Validation Loss:", )
+            print(msg.format(epoch + 1, train_accuracy, acc, val_cost))
 
             print('Epoch ', epoch + 1, ' completed out of ', training_epochs, ', loss: ', total_loss)
 

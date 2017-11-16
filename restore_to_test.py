@@ -23,14 +23,14 @@ def model_predictions(X_, Y_, model_path, image_size):
 
         graph = tf.get_default_graph()
         accuracy = graph.get_tensor_by_name('accuracy:0')
-        keep_prob = graph.get_tensor_by_name('keep_prob:0')
+        # keep_prob = graph.get_tensor_by_name('keep_prob:0')
         x = graph.get_tensor_by_name('x_placeholder:0')
         y = graph.get_tensor_by_name('y_placeholder:0')
         prediction = graph.get_tensor_by_name('predictions:0')
         correct_prediction = graph.get_tensor_by_name('correct_prediction:0')
 
-        cp, a, o = sess.run([correct_prediction, accuracy, tf.argmax(prediction, 1)],
-                            feed_dict={x: X_test, y: y_test, keep_prob: 0.1})
+        cp, a, o = sess.run([correct_prediction, accuracy, prediction],
+                            feed_dict={x: X_test, y: y_test})
 
         predictions.append(o)
 
