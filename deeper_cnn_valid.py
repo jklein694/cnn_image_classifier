@@ -67,7 +67,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     X_train, X_test, y_train, y_test = train_test_split(X_, Y_, test_size=0.2, random_state=42)
 
     # Config
-    model_path = "conv_model/model.ckpt"
+    model_path = "conv_model_deep/model.ckpt"
     image_size_sq = image_size * image_size
     batch_size = 50
     logs_path = "logs"
@@ -95,16 +95,16 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     w_conv1 = weight_variable([8, 8, 1, 16], name='hidden_layer_1')
     w_conv2 = weight_variable([5, 5, 16, 32], name='hidden_layer_2')
     w_conv3 = weight_variable([5, 5, 32, 64], name='hidden_layer_3')
-    w_fc1 = weight_variable([4096, 4096], name='hidden_layer_4')
-    w_fc2 = weight_variable([4096, 4096], name='hidden_layer_5')
-    out_w = weight_variable([4096, n_classes], name='hidden_layer_out')
+    w_fc1 = weight_variable([12800, 12800], name='hidden_layer_4')
+    w_fc2 = weight_variable([12800, 12800], name='hidden_layer_5')
+    out_w = weight_variable([12800, n_classes], name='hidden_layer_out')
 
     # bias
     b_conv1 = bias_variable([16])
     b_conv2 = bias_variable([32])
     b_conv3 = bias_variable([64])
-    b_fc1 = bias_variable([4096])
-    b_fc2 = bias_variable([4096])
+    b_fc1 = bias_variable([12800])
+    b_fc2 = bias_variable([12800])
     out_b = bias_variable([n_classes])
 
     keep_prob = tf.placeholder(tf.float32, name='keep_prob')
@@ -130,7 +130,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
     h_pool3 = max_pool_2x2(h_conv3, padding='SAME')
 
     # Fully Conncected Layer
-    h_pool3_flat = tf.reshape(h_pool3, [-1, 8 * 8 * 64])
+    h_pool3_flat = tf.reshape(h_pool3, [-1, 12800])
     h_fc1 = tf.nn.relu(tf.matmul(h_pool3_flat, w_fc1) + b_fc1)
 
     h_fc2 = tf.nn.relu(tf.matmul(h_fc1, w_fc2) + b_fc2)
@@ -219,10 +219,14 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28):
             print('~~~~~~~~~~~~~~~~~~~~\n')
 
             print('Current Learning Rate: ', lr)
-
-            print("Test accuracy %g" % accuracy.eval(feed_dict={x: X_test, y: y_test, keep_prob: 1.0}))
-
-            print("Validation Loss:", sess.run(validation_cost, feed_dict={x: X_test, y: y_test, keep_prob: 0.5}))
+            try:
+                print("Test accuracy %g" % sess.run([accuracy], feed_dict={x: X_test, y: y_test, keep_prob: 1.0}))
+            except Exception as e:
+                print(e)
+            try:
+                print("Validation Loss:", sess.run([validation_cost], feed_dict={x: X_test, y: y_test, keep_prob: 0.5}))
+            except Exception as e:
+                print(e)
 
             print('Epoch ', epoch + 1, ' completed out of ', training_epochs, ', loss: ', total_loss)
 
