@@ -124,4 +124,7 @@ def run_test(X_, Y_, model_path, image_size):
     class_names = ['Not Hotdog', 'Hotdog']
     y_test, y_pred, cm = model_predictions(X_, Y_, model_path, image_size)
     print_cm(cm, class_names)
+    print('Accuracy: ', accuracy_score(y_test, y_pred, normalize=True))
+    print('Precision: ', precision_score(y_test, y_pred, average='macro'))
+    print('Roc-Auc: ', roc_auc_score(y_test, y_pred))
 
