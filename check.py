@@ -37,7 +37,7 @@ def restore_model(tests, model_path):
             saver.restore(sess, model_path)
 
             graph = tf.get_default_graph()
-            # keep_prob = graph.get_tensor_by_name('keep_prob:0')
+            keep_prob = graph.get_tensor_by_name('keep_prob:0')
             x = graph.get_tensor_by_name('x_placeholder:0')
             y = graph.get_tensor_by_name('y_placeholder:0')
 
