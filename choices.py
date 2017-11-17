@@ -70,6 +70,17 @@ def do_run_all():
         else:
             break
     while True:
+        batch_size = input('What batch size would you like? \n')
+        if batch_size == 'break':
+            break
+        try:
+            batch_size = int(batch_size)
+        except ValueError:
+            print('Please enter valid integer')
+            continue
+        else:
+            break
+    while True:
         epoch_param = input('How many epochs would you like to run? \n')
         if epoch_param == 'break':
             break
@@ -100,7 +111,8 @@ def do_run_all():
     x, y = ia.load_data(image_size, 15000)
 
     # Run convolutional neural network
-    total_loss, accuracy = cnn7.run(x, y, epochs=epoch_param, learning_rate=learn_param)
+    total_loss, accuracy = cnn7.run(x, y, epochs=epoch_param, learning_rate=learn_param,
+                                    image_size=image_size, batch_size=batch_size)
 
     # Restore convolutional neural network and build confusion matrix
     restore_test.run_test(x, y, model_path, image_size)
@@ -119,6 +131,17 @@ def do_run_train():
             break
         try:
             image_size = int(image_size)
+        except ValueError:
+            print('Please enter valid integer')
+            continue
+        else:
+            break
+    while True:
+        batch_size = input('What batch size would you like? \n')
+        if batch_size == 'break':
+            break
+        try:
+            batch_size = int(batch_size)
         except ValueError:
             print('Please enter valid integer')
             continue
@@ -158,7 +181,8 @@ def do_run_train():
         x, y = ia.load_data(image_size, 15000)
 
     # Run convolutional neural network
-    total_loss, accuracy = cnn7.run(x, y, epochs=epoch_param, learning_rate=learn_param, image_size=image_size)
+    total_loss, accuracy = cnn7.run(x, y, epochs=epoch_param, learning_rate=learn_param,
+                                    image_size=image_size, batch_size=batch_size)
 
     # Restore convolutional neural network and build confusion matrix
     restore_test.run_test(x, y, model_path, image_size)

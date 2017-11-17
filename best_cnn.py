@@ -86,7 +86,7 @@ def create_fc_layer(input,
     return layer
 
 
-def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
+def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2, batch_size=50):
     start = time.time()
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
     print('Starting Convolutional Neural Network')
@@ -117,11 +117,10 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
 
     model_path = "conv_model/model.ckpt"
     image_size_sq = image_size * image_size
-    batch_size = 50
+
     logs_path = "logs"
     training_epochs = epochs
     initial_learning_rate = learning_rate
-
 
     # global step
     global_step = tf.Variable(0, name="global_step", trainable=False, dtype=tf.int64)
@@ -172,7 +171,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
     layer_fc2 = create_fc_layer(input=layer_fc1,
                                 num_inputs=fc_layer_size,
                                 num_outputs=num_classes,
-                                use_relu=False,)
+                                use_relu=False, )
 
     y_pred = tf.nn.softmax(layer_fc2, name="y_pred")
 
