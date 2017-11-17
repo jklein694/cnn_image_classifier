@@ -261,11 +261,10 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2, bat
 
             val_cost = sess.run(validation_cost, feed_dict={x: X_test, y_true: y_test, keep_prob: 0.5})
 
-            print('~~~~~~~~~~~~~~~~~~~~\n')
-
             print('Current Learning Rate: ', lr)
 
-            msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
+            msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation " \
+                  "Loss: {3:.3f} "
 
             print(msg.format(epoch + 1, train_accuracy, acc, val_cost))
 
