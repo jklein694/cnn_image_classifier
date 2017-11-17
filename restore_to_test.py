@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 def model_predictions(X_, Y_, model_path, image_size):
     model_path = model_path
 
-    X_ = np.array(X_).reshape(-1, image_size * image_size)
+    X_ = np.array(X_).reshape(-1, image_size, image_size, 1)
 
     X_train, X_test, y_train, y_test = train_test_split(X_, Y_, test_size=0.2, random_state=42)
 
@@ -23,14 +23,14 @@ def model_predictions(X_, Y_, model_path, image_size):
 
         graph = tf.get_default_graph()
         accuracy = graph.get_tensor_by_name('accuracy:0')
-        # keep_prob = graph.get_tensor_by_name('keep_prob:0')
+        keep_prob = graph.get_tensor_by_name('keep_prob:0')
         x = graph.get_tensor_by_name('x_placeholder:0')
         y = graph.get_tensor_by_name('y_placeholder:0')
         prediction = graph.get_tensor_by_name('predictions:0')
         correct_prediction = graph.get_tensor_by_name('correct_prediction:0')
 
         cp, a, o = sess.run([correct_prediction, accuracy, prediction],
-                            feed_dict={x: X_test, y: y_test})
+                            feed_dict={x: X_test, y: y_test, keep_prob: 1.0})
 
         predictions.append(o)
 

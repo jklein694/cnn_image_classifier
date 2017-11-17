@@ -31,13 +31,13 @@ def restore_model(tests, model_path):
     y_hats = []
 
     for test in tests:
-        test = np.array(test).reshape(-1, 784)
+
         with tf.Session() as sess:
             saver = tf.train.import_meta_graph(model_path + '.meta')
             saver.restore(sess, model_path)
 
             graph = tf.get_default_graph()
-            keep_prob = graph.get_tensor_by_name('keep_prob:0')
+            # keep_prob = graph.get_tensor_by_name('keep_prob:0')
             x = graph.get_tensor_by_name('x_placeholder:0')
             y = graph.get_tensor_by_name('y_placeholder:0')
 

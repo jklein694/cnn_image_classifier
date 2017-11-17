@@ -27,7 +27,9 @@ def bias_variable(shape):
 def create_convolutional_layer(input,
                                num_input_channels,
                                conv_filter_size,
-                               num_filters):
+                               num_filters,
+                               use_dropout=False,
+                               keep_rate=0.5):
     # We shall define the weights that will be trained using create_weights function.
     weights = weight_variable(shape=[conv_filter_size, conv_filter_size, num_input_channels, num_filters],
                               name='conv_layer')
@@ -50,6 +52,9 @@ def create_convolutional_layer(input,
     # Output of pooling is fed to Relu which is the activation function for us.
     layer = tf.nn.relu(layer)
 
+    if use_dropout:
+        layer = tf.nn.dropout(layer, keep_rate=keep_rate)
+
     return layer
 
 
@@ -64,7 +69,9 @@ def create_flatten_layer(layer):
 def create_fc_layer(input,
                     num_inputs,
                     num_outputs,
-                    use_relu=True):
+                    use_relu=True,
+                    use_dropout=False,
+                    keep_rate=0.5):
     # Let's define trainable weights and biases.
     weights = weight_variable(shape=[num_inputs, num_outputs], name='fully_connected_layer')
     biases = bias_variable(num_outputs)
@@ -73,14 +80,10 @@ def create_fc_layer(input,
     if use_relu:
         layer = tf.nn.relu(layer)
 
+    if use_dropout:
+        layer = tf.nn.dropout(layer, keep_rate=keep_rate)
+
     return layer
-
-
-# def show_progress(epoch, feed_dict_train, feed_dict_validate, val_loss):
-#     acc = session.run(accuracy, feed_dict=feed_dict_train)
-#     val_acc = session.run(accuracy, feed_dict=feed_dict_validate)
-#     msg = "Training Epoch {0} --- Training Accuracy: {1:>6.1%}, Validation Accuracy: {2:>6.1%},  Validation Loss: {3:.3f}"
-#     print(msg.format(epoch + 1, acc, val_acc, val_loss))
 
 
 def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
@@ -118,8 +121,7 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
     logs_path = "logs"
     training_epochs = epochs
     initial_learning_rate = learning_rate
-    n_classes = 2
-    input_dim = [None, image_size_sq]
+
 
     # global step
     global_step = tf.Variable(0, name="global_step", trainable=False, dtype=tf.int64)
@@ -139,6 +141,8 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
     y_true_cls = tf.argmax(y_true, dimension=1)
     y_true_cls = tf.cast(y_true_cls, tf.float32)
 
+    keep_prob = tf.placeholder(tf.float32, name='keep_prob')
+
     layer_conv1 = create_convolutional_layer(input=x,
                                              num_input_channels=num_channels,
                                              conv_filter_size=filter_size_conv1,
@@ -152,19 +156,23 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
     layer_conv3 = create_convolutional_layer(input=layer_conv2,
                                              num_input_channels=num_filters_conv2,
                                              conv_filter_size=filter_size_conv3,
-                                             num_filters=num_filters_conv3)
+                                             num_filters=num_filters_conv3,
+                                             use_dropout=True,
+                                             keep_rate=keep_prob)
 
     layer_flat = create_flatten_layer(layer_conv3)
 
     layer_fc1 = create_fc_layer(input=layer_flat,
                                 num_inputs=layer_flat.get_shape()[1:4].num_elements(),
                                 num_outputs=fc_layer_size,
-                                use_relu=True)
+                                use_relu=True,
+                                use_dropout=True,
+                                keep_rate=keep_prob)
 
     layer_fc2 = create_fc_layer(input=layer_fc1,
                                 num_inputs=fc_layer_size,
                                 num_outputs=num_classes,
-                                use_relu=False)
+                                use_relu=False,)
 
     y_pred = tf.nn.softmax(layer_fc2, name="y_pred")
 
@@ -238,21 +246,21 @@ def run(X_, Y_, epochs=10, learning_rate=0.01, image_size=28, num_classes=2):
                 batch_y = np.array(y_train)[randidx]
 
                 summary, c, training_step, lr = sess.run([summary_op, loss, global_step, learning_rate],
-                                                         feed_dict={x: batch_x, y_true: batch_y})
+                                                         feed_dict={x: batch_x, y_true: batch_y, keep_prob: 0.5})
 
                 total_loss += c
                 if step % 100 == 0:
-                    train_accuracy = accuracy.eval(feed_dict={x: batch_x, y_true: batch_y})
+                    train_accuracy = accuracy.eval(feed_dict={x: batch_x, y_true: batch_y, keep_prob: 1.0})
                     print("step %d, training accuracy %g" % (step, train_accuracy))
 
-                optimizer.run(feed_dict={x: batch_x, y_true: batch_y})
+                optimizer.run(feed_dict={x: batch_x, y_true: batch_y, keep_prob: 0.5})
 
                 # write log
                 writer.add_summary(summary, global_step=step)
 
-            acc = accuracy.eval(feed_dict={x: X_test, y_true: y_test})
+            acc = accuracy.eval(feed_dict={x: X_test, y_true: y_test, keep_prob: 1.0})
 
-            val_cost = sess.run(validation_cost, feed_dict={x: X_test, y_true: y_test})
+            val_cost = sess.run(validation_cost, feed_dict={x: X_test, y_true: y_test, keep_prob: 0.5})
 
             print('~~~~~~~~~~~~~~~~~~~~\n')
 
