@@ -23,14 +23,18 @@ def input_parser(filenames, image_size):
     return X_check
 
 
-def restore_model(tests, model_path):
+def restore_model(tests, model_path, image_size):
     model_path = model_path
 
     y_correct = np.array([0.00000000, 1.000000000]).reshape(-1, 2)
 
     y_hats = []
 
+
+
     for test in tests:
+
+        test = np.array(test).reshape(-1, image_size, image_size, 1)
 
         with tf.Session() as sess:
             saver = tf.train.import_meta_graph(model_path + '.meta')
@@ -54,7 +58,7 @@ def run(model_path, image_size):
     model_path = model_path
     file_path = ['hotdog.jpg', 'not_hotdog.jpg']
     tests = input_parser(file_path, image_size)
-    prediction = restore_model(tests, model_path)
+    prediction = restore_model(tests, model_path, image_size)
 
     for i in range(len(prediction)):
         print('Hotdog test')

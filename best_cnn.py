@@ -53,7 +53,7 @@ def create_convolutional_layer(input,
     layer = tf.nn.relu(layer)
 
     if use_dropout:
-        layer = tf.nn.dropout(layer, keep_rate=keep_rate)
+        layer = tf.nn.dropout(layer, keep_prob=keep_rate)
 
     return layer
 
@@ -81,7 +81,7 @@ def create_fc_layer(input,
         layer = tf.nn.relu(layer)
 
     if use_dropout:
-        layer = tf.nn.dropout(layer, keep_rate=keep_rate)
+        layer = tf.nn.dropout(layer, keep_prob=keep_rate)
 
     return layer
 
