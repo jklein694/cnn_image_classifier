@@ -16,7 +16,7 @@ def load_rotate__blur_img(path, img_size):
     angle = np.random.randint(0, 360)
     img = rotate_image(img, angle)
     img = cv2.blur(img, (5, 5))
-    img = cv2.resize(img, img_size)
+    img = img.resize(img, img_size, interpolation = cv2.INTER_CUBIC)
     return img
 
 
@@ -24,20 +24,20 @@ def load_rotate(path, img_size):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     angle = np.random.randint(0, 360)
     img = rotate_image(img, angle)
-    img = cv2.resize(img, img_size)
+    img = cv2.resize(img, img_size, interpolation = cv2.INTER_CUBIC)
     return img
 
 
 def load_blur_img(path, img_size):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     img = cv2.blur(img, (5, 5))
-    img = cv2.resize(img, img_size)
+    img = cv2.resize(img, img_size, interpolation = cv2.INTER_CUBIC)
     return img
 
 
 def load_img(path, img_size):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    img = cv2.resize(img, img_size)
+    img = cv2.resize(img, img_size, interpolation = cv2.INTER_CUBIC)
     return img
 
 
@@ -83,22 +83,22 @@ def load_data(img_size, class_size):
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
     print('Starting Image Augmentation')
 
-    hotdogs = glob.glob('hotdog/**/*.jpg', recursive=True)
+    hotdogs = glob.glob('lola/**/*.jpg', recursive=True)
 
-    not_hotdogs = glob.glob('not_hotdog/**/*.jpg', recursive=True)
+    not_hotdogs = glob.glob('not_lola/**/*.jpg', recursive=True)
 
     thresh_size = img_size
 
     img_size = (img_size, img_size)
 
     x_hotdog, y_hotdog = load_img_class(hotdogs, 0, class_size, img_size)
-    print('Hotdogs Images Augmented')
+    print('Lola Images Augmented')
 
     x_not_hotdog, y_not_hotdog = load_img_class(not_hotdogs, 1, class_size, img_size)
-    print('Not Hotdogs Images Augmented')
+    print('Not Lola Images Augmented')
 
-    print("There are", len(x_hotdog), "hotdog images")
-    print("There are", len(x_not_hotdog), "not hotdog images")
+    print("There are", len(x_hotdog), "Lola images")
+    print("There are", len(x_not_hotdog), "not Lola images")
 
     X = np.array(x_hotdog + x_not_hotdog)
     y = np.array(y_hotdog + y_not_hotdog)

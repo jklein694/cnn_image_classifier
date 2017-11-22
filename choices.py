@@ -16,8 +16,8 @@ import remove_null_images as rm
 import restore_to_test as restore_test
 
 start_time = time.time()
-paths = ['not_hotdog',
-         'hotdog']
+paths = ['not_lola',
+         'lola']
 
 model_path = "conv_model/model.ckpt"
 

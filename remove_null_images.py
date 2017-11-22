@@ -25,5 +25,7 @@ def remove_invalid(dir_paths):
         print('{} invalid images removed'.format(count))
 
 
-paths = ['not_hotdog',
-         'hotdog']
+paths = ['not_lola',
+         'lola']
+
+
