@@ -16,7 +16,7 @@ def load_rotate__blur_img(path, img_size):
     angle = np.random.randint(0, 360)
     img = rotate_image(img, angle)
     img = cv2.blur(img, (5, 5))
-    img = img.resize(img, img_size, interpolation = cv2.INTER_CUBIC)
+    img = cv2.resize(img, img_size)
     return img
 
 
@@ -24,20 +24,20 @@ def load_rotate(path, img_size):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     angle = np.random.randint(0, 360)
     img = rotate_image(img, angle)
-    img = cv2.resize(img, img_size, interpolation = cv2.INTER_CUBIC)
+    img = cv2.resize(img, img_size)
     return img
 
 
 def load_blur_img(path, img_size):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     img = cv2.blur(img, (5, 5))
-    img = cv2.resize(img, img_size, interpolation = cv2.INTER_CUBIC)
+    img = cv2.resize(img, img_size)
     return img
 
 
 def load_img(path, img_size):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    img = cv2.resize(img, img_size, interpolation = cv2.INTER_CUBIC)
+    img = cv2.resize(img, img_size)
     return img
 
 
@@ -123,3 +123,4 @@ def load_data(img_size, class_size):
     print('\nData Import Time: {} seconds'.format(round(end - start, 0)))
 
     return X, y
+
