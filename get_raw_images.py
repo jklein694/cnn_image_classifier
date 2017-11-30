@@ -54,21 +54,22 @@ def store_raw_images(folders, links):
 
 def read_images_to_folder():
     links = [
-        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02123045',
-        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02085620',
-        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02107142',
-        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02110958',
-        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02085936',
-        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02099712',
-        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02094433'
+        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02090827',
+        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02112018',
+        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02109961',
+        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02113335',
+        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02106662',
+        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02089232',
+        'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n02110341'
+
     ]
 
-    paths = ['tabby_cat', 'chihuahua', 'pug', 'doberman',
-             'maltese', 'labrador', 'lola']
+    paths = ['greyhound', 'pomeranian', 'husky', 'poodle',
+             'german_shepherd', 'daschshund', 'dalmation']
 
     num_not_lola_links = 5
 
-    # store_raw_images(paths, links)
+    store_raw_images(paths, links)
 
     for path in paths[:num_not_lola_links]:
         files = os.listdir(path)

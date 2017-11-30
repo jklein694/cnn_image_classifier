@@ -121,7 +121,7 @@ def plot_confusion_matrix(cm, y_test, y_pred, class_names,
 def run_test(X_, Y_, model_path, image_size):
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n')
     print('Restoring Model and Building Confusion Matrix')
-    class_names = ['Not Hotdog', 'Hotdog']
+    class_names = ['Not Lola', 'Lola']
     y_test, y_pred, cm = model_predictions(X_, Y_, model_path, image_size)
     print_cm(cm, class_names)
     print('Accuracy: ', accuracy_score(y_test, y_pred, normalize=True))
