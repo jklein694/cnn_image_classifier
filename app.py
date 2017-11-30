@@ -23,27 +23,32 @@ def runner():
         result = request.form
 
         try:
-            run_what = str(result['run_what'])
+            run_what = result['run_what']
         except:
             pass
         try:
-           image_size = str(result['img_size'])
+           image_size = result['img_size']
         except:
             pass
         try:
-            epochs =  str(result['epochs'])
+           batch = result['batch']
         except:
             pass
         try:
-            learn_rate = str(result['learn'])
+            epochs = result['epochs']
+        except:
+            pass
+        try:
+            learn_rate = result['learn']
         except:
             pass
 
         # pkl_file = open('logmodel.pkl', 'rb')
         # logmodel = pickle.load(pkl_file)
         # prediction = logmodel.predict(new_vector.reshape(1, -1))
+        run.choices(run_what, image_size, batch, epochs, learn_rate)
 
-        return run_what, image_size, epochs, learn_rate, render_template('result.html')
+        return render_template('result.html')
 
 
 # @app.route('/')
