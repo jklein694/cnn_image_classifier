@@ -11,9 +11,9 @@ redis = Redis(host="redis", db=0, socket_connect_timeout=2, socket_timeout=2)
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('./')
 def home():
-    return render_template('/Users/joeklein/lola_classifier/cnn_image_classifier/home.html')
+    return render_template('home.html')
     #letting flask know where to find the home template
 
 # submitting the form on home runs this:
