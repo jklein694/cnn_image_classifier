@@ -22,13 +22,14 @@ paths = ['not_lola',
 
 model_path = "conv_model/model.ckpt"
 
+run_what, image_size, epochs, learn_rate, _ = app.runner()
 
 def choices():
     while True:
         print(
             'Type "run_all" to run all scripts \nType "train" to just train model \nType "test" to test saved model \n'
             'Or "break" to break\n')
-        user_input = app.runner[0]
+        user_input = run_what
         # user_input = "'" + user_input + "'"
 
         if user_input == 'run_all':
@@ -60,7 +61,7 @@ def choices():
 
 def do_run_all():
     while True:
-        image_size = input('What image size would you like? \n')
+        image_size = image_size
         if image_size == 'break':
             break
         try:
