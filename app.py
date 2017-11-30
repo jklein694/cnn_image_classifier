@@ -46,6 +46,8 @@ def runner():
         # pkl_file = open('logmodel.pkl', 'rb')
         # logmodel = pickle.load(pkl_file)
         # prediction = logmodel.predict(new_vector.reshape(1, -1))
+        print(run_what, image_size, batch, epochs, learn_rate,
+              type(run_what), type(image_size), type(batch), type(epochs), type(learn_rate))
         run.choices(run_what, image_size, batch, epochs, learn_rate)
 
         return render_template('result.html')
