@@ -28,4 +28,4 @@ def remove_invalid(dir_paths):
 paths = ['not_lola',
          'lola']
 
-remove_invalid(paths)
+

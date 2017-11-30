@@ -30,13 +30,18 @@ RUN pip install scipy
 RUN pip install pandas
 RUN pip install Flask
 RUN pip install redis
+RUN pip install opencv-python
+RUN pip install matplotlib
 
 # Set the working directory to /app
-WORKDIR /app
+# Make port 80 available to the world outside this container
+EXPOSE 80
 
-# Copy the current directory contents into the container at /app
-ADD . /app
+# Define environment variable
+ENV NAME World
 
+# Run app.py when the container launches
+CMD ["python", "app.py"]
 # Bundle app source
 # ADD . /src
 
@@ -46,4 +51,3 @@ ADD . /app
 # Run
 # ENV PYTHONPATH  $PYTHONPATH:/src/info:/src/
 # WORKDIR /src/
-CMD ["python3", "app.py"]
