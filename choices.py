@@ -1,4 +1,5 @@
 import time
+import app
 
 import pandas as pd
 
@@ -27,7 +28,7 @@ def choices():
         print(
             'Type "run_all" to run all scripts \nType "train" to just train model \nType "test" to test saved model \n'
             'Or "break" to break\n')
-        user_input = input('What would you like to run: ')
+        user_input = app.runner[0]
         # user_input = "'" + user_input + "'"
 
         if user_input == 'run_all':
