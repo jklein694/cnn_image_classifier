@@ -24,7 +24,7 @@ model_path = "conv_model/model.ckpt"
 
 # run_what, image_size, epochs, learn_rate, _ = app.runner()
 
-def choices(run_what, image_size, epochs, learn_rate):
+def choices(run_what, image_size, batch, epochs, learn_rate):
     while True:
         print(
             'Type "run_all" to run all scripts \nType "train" to just train model \nType "test" to test saved model \n'
@@ -37,12 +37,12 @@ def choices(run_what, image_size, epochs, learn_rate):
                                   'This can take up to 6 hours scrapping web for images.\n'
                                   'Do you want to run all? (y/n)')
             if warning_input == 'y':
-                do_run_all(image_size, epochs, learn_rate)
+                do_run_all(image_size, batch, epochs, learn_rate)
             else:
                 break
 
         if user_input == 'train':
-            do_run_train(image_size, epochs, learn_rate)
+            do_run_train(image_size, batch,  epochs, learn_rate)
 
         if user_input == 'test':
             do_run_test(image_size)
@@ -132,7 +132,7 @@ def do_run_all(image_size, batch, epochs, learn_rate):
 
 def do_run_train(image_size, batch, epochs, learn_rate):
     while True:
-        image_size = input('What image size would you like? \n')
+        # image_size = input('What image size would you like? \n')
         if image_size == 'break':
             break
         try:
@@ -143,7 +143,8 @@ def do_run_train(image_size, batch, epochs, learn_rate):
         else:
             break
     while True:
-        batch_size = input('What batch size would you like? \n')
+        # batch_size = input('What batch size would you like? \n')
+        batch_size = batch
         if batch_size == 'break':
             break
         try:
@@ -154,7 +155,9 @@ def do_run_train(image_size, batch, epochs, learn_rate):
         else:
             break
     while True:
-        epoch_param = input('How many epochs would you like to run? \n')
+        # epoch_param = input('How many epochs would you like to run? \n')
+        epoch_param = epochs
+
         if epoch_param == 'break':
             break
         try:
@@ -165,7 +168,9 @@ def do_run_train(image_size, batch, epochs, learn_rate):
         else:
             break
     while True:
-        learn_param = input('What do you want your learning rate would you like to use? \n')
+        # learn_param = input('What do you want your learning rate would you like to use? \n')
+
+        learn_param = learn_rate
         if learn_param == 'break':
             break
         try:
