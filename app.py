@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('/home.html')
+    return render_template('/Users/joeklein/lola_classifier/cnn_image_classifier/home.html')
     #letting flask know where to find the home template
 
 # submitting the form on home runs this:
