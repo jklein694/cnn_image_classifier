@@ -1,0 +1,68 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<title>Image Classifier App</title>
+<body>
+    <form class="box" method="post" action="" enctype="multipart/form-data">
+  <div class="box__input">
+    <input class="box__file" type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" multiple />
+    <label for="file"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
+    <button class="box__button" type="submit">Upload</button>
+  </div>
+  <div class="box__uploading">Uploading&hellip;</div>
+  <div class="box__success">Done!</div>
+  <div class="box__error">Error! <span></span>.</div>
+</form>
+
+</body>
+</html>
+
+<!--<html>-->
+<!--<title>ImageClassifier</title>-->
+<!--<body>-->
+
+<!--<form action = "/runner" method="POST">-->
+    <!--<p> Select what to run :-->
+    <!--<select name="run_what">-->
+        <!--<option value="run_all">run_all </option>-->
+        <!--<option value="train">train </option>-->
+        <!--<option value="test">test</option>-->
+    <!--</select>-->
+    <!--<p> Image Size:<input name="img_size" type ="number" value="64" /> </p>-->
+    <!--<p> Batch Size:<input name="batch" type ="number" value="64" /> </p>-->
+    <!--<p> Number of Epochs:<input name="epochs" type ="number" value="15" /> </p>-->
+    <!--<p> Learning Rate: <input name="learn" type ="number" value="1e-3" /> </p>-->
+    <!--<p> <input type ="submit" value="submit" /> </p>-->
+<!--</form>-->
+<!--</body>-->
+
+<!--def run(model_path, image_size):-->
+    <!--model_path = model_path-->
+    <!--file_path = ['hotdog.jpg', 'not_hotdog.jpg']-->
+    <!--tests = input_parser(file_path, image_size)-->
+    <!--prediction = restore_model(tests, model_path, image_size)-->
+
+    <!--for i in range(len(prediction)):-->
+        <!--print('Hotdog test')-->
+        <!--print('&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; \n')-->
+        <!--if prediction[i][0]:-->
+            <!--guess = 'Hotdog'-->
+            <!--print('This is a ', guess, '! My CNN was right.')-->
+        <!--else:-->
+            <!--guess = 'not a hotdog'-->
+            <!--print('This is ', guess, ' and my CNN was wrong.')-->
+        <!--print('\t')-->
+        <!--print('\n')-->
+
+        <!--print('Not hotdog test')-->
+        <!--print('-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; \n')-->
+
+        <!--if prediction[i][0] == True:-->
+            <!--guess = 'Hotdog'-->
+            <!--print('This is a ', guess, ' :( My CNN was wrong.')-->
+        <!--else:-->
+            <!--guess = 'not a hotdog'-->
+            <!--print('This is ', guess, ' and my CNN was right!.')-->
+        <!--print('\n \n')-->

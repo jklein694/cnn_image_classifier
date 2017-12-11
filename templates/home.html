@@ -3,17 +3,17 @@
 <title>ImageClassifier</title>
 <body>
 
-<form action = "/runner" method="POST">
+<form action = "" method=>
     <p> Select what to run :
     <select name="run_what">
-        <option value="AA">run_all </option>
-        <option value="DL">train </option>
-        <option value="B6">test</option>
+        <option value="run_all">run_all </option>
+        <option value="train">train </option>
+        <option value="test">test</option>
     </select>
-    <p> Image Size:<input name="img_size" type ="text" value="64" /> </p>
-    <p> Batch Size:<input name="batch" type ="text" value="64" /> </p>
-    <p> Number of Epochs:<input name="epochs" type ="text" value="15" /> </p>
-    <p> Learning Rate: <input name="learn" type ="text" value="1e-3" /> </p>
+    <p> Image Size:<input name="img_size" type ="number" value="64" /> </p>
+    <p> Batch Size:<input name="batch" type ="number" value="64" /> </p>
+    <p> Number of Epochs:<input name="epochs" type ="number" value="15" /> </p>
+    <p> Learning Rate: <input name="learn" type ="number" value="1e-3" /> </p>
     <p> <input type ="submit" value="submit" /> </p>
 </form>
 </body>

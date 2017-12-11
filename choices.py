@@ -46,6 +46,7 @@ def choices(run_what, image_size, batch, epochs, learn_rate):
 
         if user_input == 'test':
             do_run_test(image_size)
+            break
 
         if user_input == 'break':
             break
@@ -218,10 +219,10 @@ def do_run_test(image_size):
         else:
             break
     # Rotating and or blurring images to create larger and balanced classes
-    x, y = ia.load_data(image_size, 15000)
+    # x, y = ia.load_data(image_size, 15000)
 
     # Restore convolutional neural network and build confusion matrix
-    restore_test.run_test(x, y, model_path, image_size)
+    # restore_test.run_test(x, y, model_path, image_size)
 
     # Test the neural network on the hotdog and not_hotdog jpg
     check.run(model_path, image_size)

@@ -1,0 +1,13 @@
+flask
+redis
+cv2
+glob
+numpy
+sklearn
+tensorflow
+scipy
+opencv-python
+matplotlib
+shutil
+glob2
+pandas

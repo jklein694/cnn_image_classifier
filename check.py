@@ -1,14 +1,17 @@
 import cv2
 import numpy as np
 import tensorflow as tf
+import os
 
-
+# uploads
 def input_parser(filenames, image_size):
     tests = []
+    filenames = [filenames]
 
     for file_path in filenames:
         images = []
-        image = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
+        image = cv2.imread(file_path + '/' + str(os.listdir(file_path)[0]), cv2.IMREAD_GRAYSCALE)
+        print(file_path + '/' + str(os.listdir(file_path)[0]), 'check_path')
 
         # Resizing the image to our desired size and
         # preprocessing will be done exactly as done during training
@@ -54,31 +57,17 @@ def restore_model(tests, model_path, image_size):
         return y_hats
 
 
-def run(model_path, image_size):
-    model_path = model_path
-    file_path = ['hotdog.jpg', 'not_hotdog.jpg']
+def run(file_path, model_path, image_size):
+    print(file_path, 'run file path')
+
     tests = input_parser(file_path, image_size)
     prediction = restore_model(tests, model_path, image_size)
 
     for i in range(len(prediction)):
-        print('Hotdog test')
-        print('------------ \n')
+
         if prediction[i][0]:
-            guess = 'Hotdog'
-            print('This is a ', guess, '! My CNN was right.')
+            guess = 'Lola'
+            return prediction[i][0], 'This is a ' + guess + '! My CNN was right.'
         else:
-            guess = 'not a hotdog'
-            print('This is ', guess, ' and my CNN was wrong.')
-        print('\t')
-        print('\n')
-
-        print('Not hotdog test')
-        print('--------------- \n')
-
-        if prediction[i][0] == True:
-            guess = 'Hotdog'
-            print('This is a ', guess, ' :( My CNN was wrong.')
-        else:
-            guess = 'not a hotdog'
-            print('This is ', guess, ' and my CNN was right!.')
-        print('\n \n')
+            guess = 'Not Lola'
+            return prediction[i][0], 'This is ' + guess + ' and my CNN was wrong.'
